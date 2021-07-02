@@ -8,7 +8,7 @@ import (
 
 	"io"
 
-	"./griblib"
+	"github.com/measuredweighed/grib/griblib"
 )
 
 func optionsFromFlag() griblib.Options {
