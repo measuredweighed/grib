@@ -453,7 +453,7 @@ func ReadSection5(f io.Reader, length int) (section Section5, err error) {
 		return section, err
 	}
 
-	if section.DataTemplateNumber != 0 && section.DataTemplateNumber != 2 && section.DataTemplateNumber != 3 {
+	if section.DataTemplateNumber != 0 && section.DataTemplateNumber != 2 && section.DataTemplateNumber != 3 && section.DataTemplateNumber != 40 {
 		return section, fmt.Errorf("Template number not supported: %d", section.DataTemplateNumber)
 	}
 
@@ -474,6 +474,10 @@ func (section Section5) GetDataTemplate() (interface{}, error) {
 		return data, nil
 	case 3:
 		data := Data3{}
+		read(bytes.NewReader(section.Data), &data)
+		return data, nil
+	case 40:
+		data := Data40{}
 		read(bytes.NewReader(section.Data), &data)
 		return data, nil
 	}
@@ -535,6 +539,8 @@ func ReadSection7(f io.Reader, length int, section5 Section5) (section Section7,
 			section.Data, sectionError = ParseData2(f, length, &x)
 		case Data3:
 			section.Data, sectionError = ParseData3(f, length, &x)
+		case Data40:
+			section.Data, sectionError = ParseData40(f, length, &x)
 		default:
 			sectionError = fmt.Errorf("Unknown data type")
 			return
